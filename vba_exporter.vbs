@@ -2,8 +2,8 @@
 'VBA File Exporter
 '------------------------------------------------------------
 'Auther: Hironori Yamanoha
-'Ver: 1.1
-'Date: 2018-02-05 
+'Ver: 1.2
+'Date: 2018-02-06
 'Description: This scripts allows to export VBS files from.
 '             an Excel file.
 '-------------------------------------------------------------
@@ -30,7 +30,6 @@ Set obj_param = WScript.Arguments
 if obj_param.Count > 0 then
 	'Parameter(s) detected
 	target_dir = fso.getParentFolderName(WScript.ScriptFullName) & "\" & obj_param.item(0)
-	MsgBox(target_dir)
 else
 	'No parametors detected
 	'Target direcotory is set as the parent folder
@@ -46,7 +45,7 @@ For Each fl In fso.GetFolder(target_dir).Files
 		Else
 			'Exit this script because more than one XLM file
 			'was found.
-			MsgBox("More than one XLSM file was found in the directory.")
+			MsgBox(xlsm_file & ": More than one XLSM file was found in the directory.")
 			Set fso = Nothing 'Release FSO
 			WScript.Quit
 		End If
