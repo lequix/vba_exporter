@@ -14,7 +14,7 @@ do
 		ls $dir/*.bas >/dev/null 2>&1
 		if [ $? -ne 0 ]; then
 			echo "$dir: Export bas file(s)"
-			cscript.exe vba_exporter.vbs $dir
+			cscript.exe ./vba_exporter.vbs $dir
 		else
 			echo "$dir: Skip exporting"
 		fi
