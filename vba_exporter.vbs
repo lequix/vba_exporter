@@ -2,7 +2,7 @@
 'VBA File Exporter
 '------------------------------------------------------------
 'Auther: Hironori Yamanoha
-'Ver: 1.2
+'Ver: 2.0
 'Date: 2018-02-06
 'Description: This scripts allows to export VBS files from.
 '             an Excel file.
@@ -13,6 +13,7 @@ Dim fl 'File instance
 Dim xlsm_fnd 'Boolean
 Dim xlsm_file 'Filename
 Dim target_dir 'Target Directory
+Dim lib_dir 'Lib Directory (Place for common cls files.)
 Dim obj_Excel, obj_workBook 'Object for opening an Excel file.
 Dim obj_param 'args
 Dim temp_comp
@@ -30,10 +31,12 @@ Set obj_param = WScript.Arguments
 if obj_param.Count > 0 then
 	'Parameter(s) detected
 	target_dir = fso.getParentFolderName(WScript.ScriptFullName) & "\" & obj_param.item(0)
+	lib_dir = fso.getParentFolderName(WScript.ScriptFullName) 
 else
 	'No parametors detected
 	'Target direcotory is set as the parent folder
 	target_dir = fso.getParentFolderName(WScript.ScriptFullName)
+	lib_dir = Left(target_dir, InStrRev(target_dir, "\", -1, vbBinaryCompare))
 end if
 
 'Check Excel/Macro file under the target directory specified.
@@ -80,10 +83,16 @@ Sub ExportSource()
             Select Case temp_comp.Type
                 'STANDARD_MODULE
                 Case 1
-                    temp_comp.Export target_dir & "\" & obj_workBook.Name & "_" & temp_comp.Name & ".bas"
+										If Left(temp_comp.Name, 4) = "Mod_" Then
+                    	temp_comp.Export target_dir & "\" & temp_comp.Name & ".bas"
+										Else
+                    	temp_comp.Export target_dir & "\" & obj_workBook.Name & "_" & temp_comp.Name & ".bas"
+										End If
                 'CLASS_MODULE
                 Case 2
-                    temp_comp.Export target_dir & "\" & obj_workBook.Name & "_" & temp_comp.Name & ".cls"
+										temp_comp.Export
+                    'temp_comp.Export target_dir & "\" & obj_workBook.Name & "_" & temp_comp.Name & ".cls"
+                    temp_comp.Export target_dir & "\" & temp_comp.Name & ".cls"
                 'USER_FORM
                 Case 3
                     temp_comp.Export target_dir & "\" & obj_workBook.Name & "_" & temp_comp.Name & ".frm"
